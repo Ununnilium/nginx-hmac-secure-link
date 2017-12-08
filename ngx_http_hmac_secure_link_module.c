@@ -124,6 +124,7 @@ ngx_http_secure_link_variable(ngx_http_request_t *r,
     u_char                        hash_buf[EVP_MAX_MD_SIZE], hmac_buf[EVP_MAX_MD_SIZE];
     u_int                         hmac_len;
     time_t                        timestamp, expires, gmtoff;
+    unsigned long long            temp_timestamp;
     int                           year, month, mday, hour, min, sec, gmtoff_hour, gmtoff_min;
     char                          gmtoff_sign;
 
@@ -157,7 +158,9 @@ ngx_http_secure_link_variable(ngx_http_request_t *r,
                         sizeof("1970-09-28T12:00:00+06:00")-1, p);
 
         /* Try if p is UNIX timestamp*/
-        if (sscanf((char *)p, "%d", (int*)&timestamp) != 1) {
+        if (sscanf((char *)p, "%llu", &temp_timestamp) == 1) {
+            timestamp = (time_t)temp_timestamp;
+        } else {
             /* Parse timestamp in ISO8601 format */
             if (sscanf((char *)p, "%d-%d-%dT%d:%d:%d%c%d:%d",
                                 &year, &month, &mday, &hour, &min, &sec,
