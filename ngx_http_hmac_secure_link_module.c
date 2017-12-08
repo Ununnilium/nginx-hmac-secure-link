@@ -157,7 +157,7 @@ ngx_http_secure_link_variable(ngx_http_request_t *r,
                         sizeof("1970-09-28T12:00:00+06:00")-1, p);
 
         /* Try if p is UNIX timestamp*/
-        if (sscanf((char *)p, "%d", &timestamp) != 1) {
+        if (sscanf((char *)p, "%d", (int*)&timestamp) != 1) {
             /* Parse timestamp in ISO8601 format */
             if (sscanf((char *)p, "%d-%d-%dT%d:%d:%d%c%d:%d",
                                 &year, &month, &mday, &hour, &min, &sec,
